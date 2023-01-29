@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from __future__ import division
 #from __future__ import google_type_annotations
 from __future__ import print_function
-
+import sys
 import os
 import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -228,7 +228,7 @@ def _run_example(max_time=_MAX_TIME_SECONDS):
   #  time.sleep(1./240)  
   current_time = robot.GetTimeSinceReset()
   #logId = p.startStateLogging(p.STATE_LOGGING_PROFILE_TIMINGS, "mpc.json")
-  
+  time.sleep(3)
   while current_time < max_time:
     #pos,orn = p.getBasePositionAndOrientation(robot_uid)
     #print("pos=",pos, " orn=",orn)
@@ -241,6 +241,17 @@ def _run_example(max_time=_MAX_TIME_SECONDS):
 
     # Needed before every call to get_action().
     controller.update()
+
+    # Read the states of the robot
+    o = robot.GetTrueObservation()
+    r = robot.GetTrueBaseOrientation()
+    t = robot.GetTrueBasePosition()
+    v = robot.GetBaseVelocity()
+
+    # print(v)
+    # print(lin_speed)
+    # print('-----------------')
+
     hybrid_action, info = controller.get_action()
     
     robot.Step(hybrid_action)
